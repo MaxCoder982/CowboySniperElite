@@ -1,0 +1,7 @@
+/* Bundled webfonts (SIL Open Font License): Rye (display), Teko (UI), Smokum (accents) */
+@font-face { font-family: 'Rye'; src: url('../assets/fonts/rye-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Smokum'; src: url('../assets/fonts/smokum-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Teko'; src: url('../assets/fonts/teko-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Teko'; src: url('../assets/fonts/teko-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Teko'; src: url('../assets/fonts/teko-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Teko'; src: url('../assets/fonts/teko-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }

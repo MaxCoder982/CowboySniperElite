@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Cowboy Sniper Elite</title>
+  <meta name="description" content="Cowboy Sniper Elite — a Wild West 3D sniper game. Clean up the frontier one bounty at a time.">
+  <meta name="theme-color" content="#1a0f08">
+  <link rel="icon" type="image/png" href="assets/images/icons/star_badge.png">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/menus.css">
+  <link rel="stylesheet" href="css/hud.css">
+  <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
+</head>
+<body>
+  <div id="app">
+    <canvas id="gl"></canvas>
+    <canvas id="overlay"></canvas>
+    <div id="grain"></div>
+
+    <!-- ===================== LOADING ===================== -->
+    <section id="loading" class="screen active">
+      <div class="load-bg"></div>
+      <div class="load-inner">
+        <img class="load-logo" src="assets/images/ui/logo.png" alt="Cowboy Sniper Elite">
+        <div class="load-bar"><div class="load-fill" id="loadFill"></div><div class="load-bullet"></div></div>
+        <div class="load-text" id="loadText">Saddling up…</div>
+        <div class="load-tip" id="loadTip"></div>
+        <button class="btn btn-gold btn-xl hidden" id="btnEnter" data-sfx="click">Click to Ride</button>
+      </div>
+    </section>
+
+    <!-- ===================== MAIN MENU ===================== -->
+    <section id="menu" class="screen">
+      <div class="menu-shade"></div>
+      <header class="topbar">
+        <div class="profile-chip">
+          <div class="rank-badge"><img src="assets/images/icons/star_badge.png" alt=""><span id="rankLevel">1</span></div>
+          <div class="rank-info">
+            <div class="rank-name" id="rankName">Greenhorn</div>
+            <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+          </div>
+        </div>
+        <div class="currency"><img src="assets/images/icons/coin.png" alt=""><span class="cash-val" id="menuCash">$0</span></div>
+        <div class="currency stars"><i class="ico ico-star"></i><span id="menuStars">0/45</span></div>
+        <button class="icon-btn" id="btnMute" title="Mute (M)"><i class="ico ico-sound"></i></button>
+        <button class="icon-btn" id="btnFullscreen" title="Fullscreen (F11)"><i class="ico ico-fullscreen"></i></button>
+      </header>
+      <div class="menu-left">
+        <img class="menu-logo" src="assets/images/ui/logo.png" alt="Cowboy Sniper Elite">
+        <nav class="menu-nav">
+          <button class="btn btn-gold btn-xl" id="btnPlay" data-sfx="click"><i class="ico ico-target"></i><span>Ride Out</span><small id="nextContractName">First Bounty</small></button>
+          <button class="btn btn-leather" id="btnContracts"><i class="ico ico-map"></i><span>Contracts</span></button>
+          <button class="btn btn-leather" id="btnShowdown"><i class="ico ico-skull"></i><span>Showdown</span><small id="showdownLock">Endless waves</small></button>
+          <button class="btn btn-leather" id="btnGunsmith"><i class="ico ico-rifle"></i><span>Gunsmith</span></button>
+          <button class="btn btn-leather" id="btnBounty"><i class="ico ico-trophy"></i><span>Bounty Board</span><b class="badge-dot hidden" id="bountyDot"></b></button>
+          <button class="btn btn-leather" id="btnSettings"><i class="ico ico-gear"></i><span>Settings</span></button>
+          <button class="btn btn-leather" id="btnHowTo"><i class="ico ico-help"></i><span>How to Play</span></button>
+        </nav>
+      </div>
+      <aside class="menu-right">
+        <div class="daily-card" id="dailyCard">
+          <div class="dc-title"><i class="ico ico-calendar"></i> Today's Bounties</div>
+          <ul id="menuChallenges"></ul>
+        </div>
+      </aside>
+      <footer class="menu-foot"><span>v1.0 · Mouse + Keyboard · <kbd>Esc</kbd> back · <kbd>Enter</kbd> select</span></footer>
+    </section>
+
+    <!-- ===================== CONTRACTS ===================== -->
+    <section id="contracts" class="screen panel-screen">
+      <div class="panel wide">
+        <div class="panel-head">
+          <button class="btn btn-small btn-dark back" data-back><i class="ico ico-back"></i>Back</button>
+          <h2>Contracts</h2>
+          <div class="currency"><i class="ico ico-star"></i><span id="contractStars">0/45</span></div>
+        </div>
+        <div class="territory-tabs" id="territoryTabs"></div>
+        <div class="contract-grid" id="contractGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===================== BRIEFING ===================== -->
+    <section id="briefing" class="screen panel-screen">
+      <div class="panel wide briefing">
+        <div class="poster">
+          <img src="assets/images/ui/wanted_poster.png" alt="">
+          <div class="poster-portrait"><canvas id="portrait" width="256" height="320"></canvas></div>
+          <div class="poster-name" id="posterName">Gang Member</div>
+          <div class="poster-reward" id="posterReward">$200 REWARD</div>
+        </div>
+        <div class="brief-body">
+          <div class="brief-territory" id="briefTerritory">Dustwater Gulch · Noon</div>
+          <h2 id="briefTitle">First Bounty</h2>
+          <p class="brief-text" id="briefText"></p>
+          <div class="brief-obj"><i class="ico ico-target"></i><span id="briefObjective"></span></div>
+          <div class="brief-grid">
+            <div><label>Reward</label><b id="briefReward">$200</b></div>
+            <div><label>Ammo</label><b id="briefAmmo">12</b></div>
+            <div><label>Wind</label><b id="briefWind">Calm</b></div>
+            <div><label>Rifle</label><b id="briefRifle">Carbine</b></div>
+          </div>
+          <div class="brief-stars" id="briefStars"></div>
+          <div class="brief-actions">
+            <button class="btn btn-dark" data-back><i class="ico ico-back"></i>Back</button>
+            <button class="btn btn-leather" id="btnBriefGunsmith"><i class="ico ico-rifle"></i>Gunsmith</button>
+            <button class="btn btn-gold btn-lg" id="btnStart"><i class="ico ico-play"></i>Take the Contract</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GUNSMITH ===================== -->
+    <section id="gunsmith" class="screen panel-screen">
+      <div class="panel wide">
+        <div class="panel-head">
+          <button class="btn btn-small btn-dark back" data-back><i class="ico ico-back"></i>Back</button>
+          <h2>Gunsmith</h2>
+          <div class="currency"><img src="assets/images/icons/coin.png" alt=""><span class="cash-val" id="shopCash">$0</span></div>
+        </div>
+        <div class="tabs"><button class="tab active" data-tab="rifles">Rifles</button><button class="tab" data-tab="upgrades">Upgrades</button></div>
+        <div class="tab-body" id="tab-rifles"><div class="rifle-grid" id="rifleGrid"></div></div>
+        <div class="tab-body hidden" id="tab-upgrades"><div class="upgrade-list" id="upgradeList"></div></div>
+      </div>
+    </section>
+
+    <!-- ===================== BOUNTY BOARD ===================== -->
+    <section id="bounty" class="screen panel-screen">
+      <div class="panel wide">
+        <div class="panel-head">
+          <button class="btn btn-small btn-dark back" data-back><i class="ico ico-back"></i>Back</button>
+          <h2>Bounty Board</h2>
+          <div class="currency"><img src="assets/images/icons/coin.png" alt=""><span class="cash-val" id="bountyCash">$0</span></div>
+        </div>
+        <div class="bounty-cols">
+          <div class="bounty-col">
+            <h3><i class="ico ico-calendar"></i> Daily Challenges <small id="challengeReset"></small></h3>
+            <div id="challengeList"></div>
+            <h3><i class="ico ico-star"></i> Login Streak</h3>
+            <div class="streak" id="streakRow"></div>
+            <h3><i class="ico ico-target"></i> Career</h3>
+            <div class="career" id="careerStats"></div>
+          </div>
+          <div class="bounty-col">
+            <h3><i class="ico ico-trophy"></i> Achievements <small id="achCount"></small></h3>
+            <div class="ach-grid" id="achGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SETTINGS ===================== -->
+    <section id="settings" class="screen panel-screen">
+      <div class="panel">
+        <div class="panel-head">
+          <button class="btn btn-small btn-dark back" data-back><i class="ico ico-back"></i>Back</button>
+          <h2>Settings</h2><span></span>
+        </div>
+        <div class="settings-body" id="settingsBody"></div>
+        <div class="settings-foot">
+          <button class="btn btn-small btn-red" id="btnReset">Reset Progress</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HOW TO PLAY ===================== -->
+    <section id="howto" class="screen panel-screen">
+      <div class="panel">
+        <div class="panel-head">
+          <button class="btn btn-small btn-dark back" data-back><i class="ico ico-back"></i>Back</button>
+          <h2>How to Play</h2><span></span>
+        </div>
+        <div class="howto-body">
+          <div class="keys">
+            <div><span class="kc">Mouse</span><span>Aim</span></div>
+            <div><span class="kc">Left Click</span><span>Fire</span></div>
+            <div><span class="kc">Right Click</span><span class="or">/</span><span class="kc">Shift</span><span>Scope in</span></div>
+            <div><span class="kc">Wheel</span><span class="or">/</span><span class="kc">Q</span><span class="kc">E</span><span>Scope zoom</span></div>
+            <div><span class="kc">Space</span><span>Hold breath (steady aim)</span></div>
+            <div><span class="kc">R</span><span>Reload</span></div>
+            <div><span class="kc">F</span><span>Dead-Eye slow motion</span></div>
+            <div><span class="kc">W</span><span class="kc">A</span><span class="kc">S</span><span class="kc">D</span><span class="or">/</span><span class="kc">Arrows</span><span>Fine aim</span></div>
+            <div><span class="kc">Tab</span><span>Show objectives</span></div>
+            <div><span class="kc">Esc</span><span class="or">/</span><span class="kc">P</span><span>Pause / Back</span></div>
+            <div><span class="kc">Enter</span><span>Confirm / Start</span></div>
+            <div><span class="kc">M</span><span>Mute</span></div>
+          </div>
+          <div class="tips">
+            <h3>The Code of the Elite</h3>
+            <ul>
+              <li><b>Headshots</b> pay extra and kill instantly — even the toughest outlaws.</li>
+              <li>A <b class="red">red ring</b> means an outlaw is drawing a bead on you. Shoot first or take cover.</li>
+              <li>Bullets <b>drop</b> over distance and <b>drift</b> in the wind. Use the scope's range ticks and the wind flag.</li>
+              <li>Hold <b>Space</b> to steady your breath. Hold it too long and you'll gasp.</li>
+              <li><b>Dead-Eye</b> fills with every kill. Press <b>F</b> to slow time and steady your hand.</li>
+              <li>Lead your shots on <b>riders</b> and the <b>train</b>.</li>
+              <li>Red powder barrels explode. Civilians do not — don't shoot them.</li>
+              <li>Earn <b>stars</b> for accuracy and headshots to open new territories.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PAUSE ===================== -->
+    <section id="pause" class="screen overlay-screen">
+      <div class="pause-box">
+        <img class="pause-logo" src="assets/images/ui/logo_small.png" alt="Cowboy Sniper Elite">
+        <h2>Paused</h2>
+        <div class="pause-obj" id="pauseObjective"></div>
+        <button class="btn btn-gold btn-lg" id="btnResume"><i class="ico ico-play"></i>Resume</button>
+        <button class="btn btn-leather" id="btnRestart"><i class="ico ico-reload"></i>Restart Contract</button>
+        <button class="btn btn-leather" id="btnPauseSettings"><i class="ico ico-gear"></i>Settings</button>
+        <button class="btn btn-leather" id="btnPauseHowTo"><i class="ico ico-help"></i>How to Play</button>
+        <button class="btn btn-dark" id="btnQuit"><i class="ico ico-back"></i>Quit to Menu</button>
+      </div>
+    </section>
+
+    <!-- ===================== RESULTS ===================== -->
+    <section id="results" class="screen overlay-screen">
+      <div class="results-box">
+        <div class="results-ribbon" id="resultsTitle">Bounty Collected</div>
+        <div class="results-sub" id="resultsSub"></div>
+        <div class="results-stars" id="resultsStars"><i class="rstar"></i><i class="rstar"></i><i class="rstar"></i></div>
+        <div class="results-grid">
+          <div class="results-stats" id="resultsStats"></div>
+          <div class="results-cash">
+            <div id="resultsBreakdown"></div>
+            <div class="total"><span>Total</span><b id="resultsTotal">$0</b></div>
+          </div>
+        </div>
+        <div class="results-extra" id="resultsExtra"></div>
+        <div class="results-actions">
+          <button class="btn btn-dark" id="btnResMenu"><i class="ico ico-back"></i>Menu</button>
+          <button class="btn btn-leather" id="btnResRetry"><i class="ico ico-reload"></i>Retry</button>
+          <button class="btn btn-gold btn-lg" id="btnResNext"><i class="ico ico-play"></i>Next Contract</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DAILY REWARD ===================== -->
+    <section id="daily" class="screen overlay-screen">
+      <div class="daily-box">
+        <h2>Daily Reward</h2>
+        <p>Ride in every day to grow your streak.</p>
+        <div class="streak big" id="dailyStreak"></div>
+        <button class="btn btn-gold btn-lg" id="btnClaimDaily"><img src="assets/images/icons/coin.png" alt="">Claim <span id="dailyAmount"></span></button>
+      </div>
+    </section>
+
+    <!-- ===================== CONFIRM ===================== -->
+    <section id="confirm" class="screen overlay-screen">
+      <div class="daily-box">
+        <h2 id="confirmTitle">Are you sure?</h2>
+        <p id="confirmText"></p>
+        <div class="brief-actions center">
+          <button class="btn btn-dark" id="btnConfirmNo">Cancel</button>
+          <button class="btn btn-red" id="btnConfirmYes">Confirm</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HUD ===================== -->
+    <div id="hud" class="hidden">
+      <div class="hud-obj" id="hudObj">
+        <div class="obj-title" id="objTitle"></div>
+        <div class="obj-progress" id="objProgress"></div>
+        <div class="obj-sub" id="objSub"></div>
+      </div>
+      <div class="hud-boss hidden" id="hudBoss">
+        <div class="boss-name"><i class="ico ico-skull"></i><span id="bossName"></span></div>
+        <div class="boss-bar"><div class="boss-fill" id="bossFill"></div></div>
+      </div>
+      <div class="hud-tr">
+        <div class="hud-cash"><img src="assets/images/icons/coin.png" alt=""><span id="hudCash">$0</span></div>
+        <div class="hud-time" id="hudTime">0:00</div>
+        <div class="hud-combo hidden" id="hudCombo">x2 STREAK</div>
+      </div>
+      <div class="hud-bl">
+        <div class="hud-health">
+          <img src="assets/images/icons/star_badge.png" alt="">
+          <div class="bar"><div class="fill" id="hpFill"></div><div class="ghost" id="hpGhost"></div></div>
+        </div>
+        <div class="hud-deadeye" id="hudDeadeye">
+          <i class="ico ico-eye"></i>
+          <div class="bar"><div class="fill" id="deFill"></div></div>
+          <kbd>F</kbd>
+        </div>
+        <div class="hud-breath" id="hudBreath">
+          <i class="ico ico-lungs"></i>
+          <div class="bar"><div class="fill" id="brFill"></div></div>
+          <kbd>Space</kbd>
+        </div>
+      </div>
+      <div class="hud-br">
+        <div class="hud-wind" id="hudWind"><i class="ico ico-wind"></i><div class="wind-arrow" id="windArrow">➤</div><span id="windVal">Calm</span></div>
+        <div class="hud-zoom" id="hudZoom">4×</div>
+        <div class="hud-ammo">
+          <div class="mag" id="hudMag"></div>
+          <div class="reserve"><span id="hudReserve">12</span><small>spare</small></div>
+        </div>
+        <div class="hud-reload hidden" id="hudReload">RELOADING</div>
+      </div>
+      <div class="hint hidden" id="hint"></div>
+      <div class="killfeed" id="killfeed"></div>
+      <div class="banner hidden" id="banner"><div class="b-title"></div><div class="b-sub"></div></div>
+      <div class="toasts" id="toasts"></div>
+      <div class="fps hidden" id="fps"></div>
+      <button class="icon-btn hud-pause" id="btnHudPause" title="Pause (Esc)"><i class="ico ico-pause"></i></button>
+      <div class="click-to-aim hidden" id="clickToAim">Click to take aim</div>
+    </div>
+    <div id="letterbox"><div class="lb top"></div><div class="lb bot"></div></div>
+    <div id="fxHurt"></div>
+    <div id="fxDeadeye"></div>
+  </div>
+  <noscript>Cowboy Sniper Elite needs JavaScript and WebGL.</noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

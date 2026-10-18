@@ -1,0 +1,59 @@
+{
+  "comment": "Skeletal rig proportions (meters) + outfit palettes for the procedural cowboy, civilian and horse models.",
+  "rig": {
+    "hipHeight": 0.95, "hipWidth": 0.1, "thigh": 0.45, "shin": 0.44, "spine": 0.14, "chest": 0.26,
+    "neck": 0.08, "headRadius": 0.115, "shoulderWidth": 0.2, "upperArm": 0.29, "foreArm": 0.27,
+    "limbRadius": { "thigh": 0.085, "shin": 0.065, "upperArm": 0.058, "foreArm": 0.048 },
+    "torso": { "radius": 0.17, "length": 0.3, "scale": [1.08, 1, 0.72] },
+    "hips": { "radius": 0.15, "length": 0.08, "scale": [1.08, 1, 0.75] }
+  },
+  "hatProfile": [[0.0, 0.17], [0.08, 0.165], [0.1, 0.14], [0.112, 0.08], [0.118, 0.03], [0.16, 0.022], [0.24, 0.022], [0.29, 0.04], [0.305, 0.055], [0.3, 0.04], [0.24, 0.012], [0.16, 0.012], [0.11, 0.012], [0.0, 0.012]],
+  "bowlerProfile": [[0.0, 0.16], [0.07, 0.155], [0.1, 0.12], [0.112, 0.06], [0.115, 0.03], [0.15, 0.022], [0.17, 0.03], [0.165, 0.015], [0.1, 0.012], [0.0, 0.012]],
+  "bonnetProfile": [[0.0, 0.15], [0.09, 0.14], [0.13, 0.08], [0.15, 0.0], [0.13, -0.02], [0.0, 0.0]],
+  "palettes": {
+    "outlaw": {
+      "skin": ["#c58c64", "#a8704e", "#d9a07a", "#8c5a3c", "#e0b090"],
+      "shirt": ["#7a2c22", "#3e4a5a", "#6b5a3a", "#2f3a2c", "#8a6a4a", "#5a2a3e", "#a0784a"],
+      "vest": ["#2a1e16", "#3a2a1c", "#1e1e22", "#4a3424", null, null],
+      "coat": [null, null, null, "#5a4632", "#3a2e24"],
+      "pants": ["#3a3226", "#4a3e2e", "#2e2a26", "#5a4a36", "#28303a"],
+      "hat": ["#3a2a1c", "#1e1a16", "#5a4430", "#6a5a40", "#2a2420", "#7a6248"],
+      "bandana": ["#8a1e1e", "#1e1e1e", "#2a3a6a", "#6a1e1e", null],
+      "boots": ["#2a1c12", "#1a1410", "#3a2a1a"],
+      "belt": ["#5a3a1e", "#2a1a10"]
+    },
+    "civilian": {
+      "skin": ["#d9a07a", "#c58c64", "#e8bc98", "#a8704e"],
+      "shirt": ["#e8e0d0", "#c8d4dc", "#d8c8a8", "#e0d4c0", "#b8c8b0"],
+      "vest": ["#4a4a52", "#5a4232", null, null],
+      "coat": [null, null, "#4a4440"],
+      "pants": ["#4a4440", "#5a5048", "#3a3a40"],
+      "hat": ["#3a3a3a", "#5a4a3a", "#7a6a50"],
+      "bandana": [null],
+      "boots": ["#2a1c12", "#1a1410"],
+      "belt": ["#3a2a1a"]
+    },
+    "lady": {
+      "skin": ["#e8bc98", "#d9a07a", "#c58c64"],
+      "dress": ["#6a2a3a", "#2a4a6a", "#4a6a4a", "#8a6a3a", "#5a3a6a"],
+      "shirt": ["#e8e0d0", "#f0e6d8"],
+      "bonnet": ["#e8dcc4", "#d8c8a8", "#6a2a3a"]
+    }
+  },
+  "horse": {
+    "body": { "radius": 0.42, "length": 1.1 },
+    "legLength": 0.75, "neckLength": 0.75, "headLength": 0.55,
+    "coats": ["#5a3420", "#2a1e18", "#8a5a34", "#e0d8cc", "#3a2a22", "#a0703e"],
+    "manes": ["#1a1410", "#2a1e18", "#e8e0d0", "#3a2418"],
+    "saddle": "#4a2a16"
+  },
+  "train": {
+    "locomotive": { "length": 9.5, "color": "#1e2024", "trim": "#8a1e1e", "brass": "#c8963c" },
+    "cars": [
+      { "type": "box", "length": 9, "color": "#7a3a24" },
+      { "type": "flat", "length": 8.5, "color": "#4a3828" },
+      { "type": "box", "length": 9, "color": "#5a4a2a" },
+      { "type": "passenger", "length": 10, "color": "#2a4a3a" }
+    ]
+  }
+}
